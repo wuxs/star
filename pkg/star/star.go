@@ -2,8 +2,13 @@ package star
 
 import (
 	"bytes"
+	"encoding/hex"
 	"fmt"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 	"io"
+	"io/ioutil"
+	"strings"
 )
 
 type Star struct {
@@ -23,10 +28,15 @@ func (s *Star) Reset() *Star {
 	return s
 }
 
+func (s *Star) Init() *Star {
+	s.buffer.Write([]byte{0x1B, 0x40})
+	return s
+}
+
 func (s *Star) Flush() (int, error) {
 	data := s.buffer.Bytes()
 	s.buffer.Reset()
-	fmt.Println(data)
+	fmt.Println(strings.ToUpper(hex.EncodeToString(data)))
 	return s.output.Write(data)
 }
 
@@ -61,9 +71,12 @@ func (s *Star) CancelHigLight() *Star {
 }
 
 func (s *Star) Print(str string) *Star {
-	s.buffer.Write([]byte(str))
+	reader := transform.NewReader(bytes.NewReader([]byte(str)), simplifiedchinese.GB18030.NewEncoder())
+	b, _ := ioutil.ReadAll(reader)
+	s.buffer.Write(b)
 	return s
 }
+
 
 func (s *Star) PrintWithCodePage(str string, codepage CodePage) *Star {
 	s.SpecifyCodePage(codepage)

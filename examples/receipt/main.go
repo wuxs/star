@@ -52,9 +52,7 @@ func main() {
 	}
 	defer conn.Close()
 	s := star.NewStar(conn)
-	s.Reset().
-		SpecifyCodePage(star.Utf8).
-		SpecifyLineSpace(48).
+	s.Init().
 		SpecifyAlignment(star.Center).
 		SpecifyBold().
 		Print("车辆通行费\n").
