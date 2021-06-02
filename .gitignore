@@ -1,0 +1,7 @@
+.idea
+vendor
+
+go.sum
+image.jpg
+main
+test
