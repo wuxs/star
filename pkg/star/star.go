@@ -2,7 +2,6 @@ package star
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 )
 
@@ -11,22 +10,19 @@ type Star struct {
 	buffer bytes.Buffer
 }
 
-func NewStar(output io.ReadWriteCloser) *Star {
-	return &Star{
-		output: output,
-		buffer: bytes.Buffer{},
-	}
-}
-
 func (s *Star) Reset() *Star {
 	s.buffer.Write([]byte{0x18})
+	return s
+}
+
+func (s *Star) Init() *Star {
+	s.buffer.Write([]byte{0x1B, 0x40})
 	return s
 }
 
 func (s *Star) Flush() (int, error) {
 	data := s.buffer.Bytes()
 	s.buffer.Reset()
-	fmt.Println(data)
 	return s.output.Write(data)
 }
 
@@ -40,16 +36,6 @@ func (s *Star) CancelBold() *Star {
 	return s
 }
 
-func (s *Star) SpecifyEmphasized() *Star {
-	s.buffer.Write([]byte{0x1B, 0x45})
-	return s
-}
-
-func (s *Star) CancelEmphasized() *Star {
-	s.buffer.Write([]byte{0x1B, 0x46})
-	return s
-}
-
 func (s *Star) SpecifyHigLight() *Star {
 	s.buffer.Write([]byte{0x1B, 0x34})
 	return s
@@ -57,11 +43,6 @@ func (s *Star) SpecifyHigLight() *Star {
 
 func (s *Star) CancelHigLight() *Star {
 	s.buffer.Write([]byte{0x1B, 0x35})
-	return s
-}
-
-func (s *Star) Print(str string) *Star {
-	s.buffer.Write([]byte(str))
 	return s
 }
 

@@ -51,26 +51,25 @@ func main() {
 		return
 	}
 	defer conn.Close()
-	s := star.NewStar(conn)
-	s.Reset().
-		SpecifyCodePage(star.Utf8).
-		SpecifyLineSpace(48).
-		SpecifyAlignment(star.Center).
-		SpecifyBold().
-		Print("车辆通行费\n").
-		CancelBold().
-		SpecifyAlignment(star.Left).
-		Print("\n").
-		Print(fmt.Sprintf("          发票代码: %s\n", "1234567890")).
-		Print(fmt.Sprintf("          发票代码: %s\n", "1234567890")).
-		Print("\n").
-		Print(fmt.Sprintf("    车类: %s\n", "客一型")).
-		Print(fmt.Sprintf("    车号: %s\n", "京A12345")).
-		Print(fmt.Sprintf("    入口: %s\n", "西出口")).
-		Print(fmt.Sprintf("    出口: %s\n", "东出口口")).
-		Print(fmt.Sprintf("    日期: " + time.Now().Format("2006-01-01 15:04") + "\n")).
-		FeedPaperLines(5).
-		CutFull()
+
+	s := star.NewSP700(conn)
+	s.Init()
+	s.SpecifyAlignment(star.Center)
+	s.SpecifyBold()
+	s.Print("车辆通行费\n")
+	s.CancelBold()
+	s.SpecifyAlignment(star.Left)
+	s.Print("\n")
+	s.Print(fmt.Sprintf("          发票代码: %s\n", "1234567890"))
+	s.Print(fmt.Sprintf("          发票代码: %s\n", "1234567890"))
+	s.Print("\n")
+	s.Print(fmt.Sprintf("    车类: %s\n", "客一型"))
+	s.Print(fmt.Sprintf("    车号: %s\n", "京A12345"))
+	s.Print(fmt.Sprintf("    入口: %s\n", "西出口"))
+	s.Print(fmt.Sprintf("    出口: %s\n", "东出口口"))
+	s.Print(fmt.Sprintf("    日期: " + time.Now().Format("2006-01-01 15:04") + "\n"))
+	s.FeedPaperLines(5)
+	s.CutFull()
 	_, err := s.Flush()
 	if err != nil {
 		fmt.Println(err.Error())
